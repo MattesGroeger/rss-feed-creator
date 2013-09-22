@@ -13,7 +13,7 @@ class ARDMediathekParser
       rating_span = div.css('p.mt-rating').first.content
       channel_span = div.css('span.mt-channel').first.content
       airtime_span = div.css('span.mt-airtime').first.content
-
+      
       entry = Entry.new()
       entry.title = title_a.content
       entry.show = source_span.sub(/aus: /, '')
@@ -23,9 +23,17 @@ class ARDMediathekParser
       date, entry.duration = (matches = airtime_span.match(/(^.+) (\d+:\d+) min/i)) ? matches.captures : [airtime_span, "??:??"]
       entry.date = Date::strptime(date, "%d.%m.%y")
       entry.rating = (matches = rating_span.match(/Nutzerbewertung (\d) von \d/i)) ? matches.captures.first : "?"
+      entry.id = title_a['href'].match(/.+\?documentId=(.+)$/i).captures.first
 
       entries << entry
     end
     entries
+  end
+  
+  def parse_details(html, entry)
+    doc = Nokogiri::HTML(html)
+    entry.title = doc.xpath('//h3/a').first.content
+    entry.description = doc.xpath('//p').first.content
+    entry.discovered = DateTime.now
   end
 end

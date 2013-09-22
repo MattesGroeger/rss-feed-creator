@@ -12,14 +12,14 @@ def generate_feed(entries)
     rss.channel.language = "de"
 
     rss.items.do_sort = true
-    rss.items.max_size = 15
+    rss.items.max_size = 100
 
     entries.each do |entry|
       xml = rss.items.new_item
       xml.title       = entry.title
       xml.link        = entry.url
-      xml.description = "Sender: #{entry.channel}, Sendung: #{entry.show}, Länge: #{entry.duration}, Wertung: #{entry.rating}/5"
-      xml.date        = entry.date.to_s
+      xml.description = "#{entry.description} // #{entry.show}, #{entry.channel} (#{entry.duration} min) <#{entry.rating}/5>"
+      xml.date        = entry.discovered.to_s
     end
   end
 end

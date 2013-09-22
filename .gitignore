@@ -37,3 +37,6 @@ Icon
 !.gitignore
 !.git*
 *~
+
+# Project
+database
