@@ -5,7 +5,7 @@ require_relative 'feed'
 
 MAX_ENTRIES = 300
 
-get '/feed.xml' do
+get '/rss.xml' do
   content_type 'text/xml; charset=utf-8'
   entries = update_data()
   generate_feed(entries).to_s
