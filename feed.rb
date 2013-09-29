@@ -18,7 +18,7 @@ def generate_feed(entries)
       xml = rss.items.new_item
       xml.title       = entry['title']
       xml.link        = entry['url']
-      xml.description = "#{entry['description']} // #{entry['show']}, #{entry['channel']} (#{entry['duration']} min) <#{entry['rating']}/5>"
+      xml.description = "#{entry['description']} // #{entry['show']}, #{entry['channel']} (#{entry['duration']} min) <#{entry['rating']}/5> (on air: #{entry['date']})"
       xml.date        = entry['discovered']
     end
   end

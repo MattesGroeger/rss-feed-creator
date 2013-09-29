@@ -5,7 +5,7 @@ require_relative 'parser'
 require_relative 'feed'
 
 MAX_ENTRIES = 300
-ITEMS_TO_LOAD_AT_ONCE = 10
+ITEMS_TO_LOAD_AT_ONCE = 5
 
 #MONGO = Mongo::Connection.new.db("rss")
 MONGO = Mongo::MongoClient.from_uri("mongodb://root:K8VhcEzQVbgc3z@ds047458.mongolab.com:47458/rssfeed").db("rssfeed")
