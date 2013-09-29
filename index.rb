@@ -7,8 +7,8 @@ require_relative 'feed'
 MAX_ENTRIES = 300
 ITEMS_TO_LOAD_AT_ONCE = 5
 
-#MONGO = Mongo::Connection.new.db("rss")
-MONGO = Mongo::MongoClient.from_uri("mongodb://root:K8VhcEzQVbgc3z@ds047458.mongolab.com:47458/rssfeed").db("rssfeed")
+DATABASE_URI = ENV['DATABASE_URI'] || 'mongodb://localhost'
+MONGO = Mongo::MongoClient.from_uri(DATABASE_URI).db("rssfeed")
 
 get '/rss.xml' do
   content_type 'text/xml; charset=utf-8'
@@ -43,7 +43,7 @@ def update_data
   
   new_items_count = 0
   # for each fetched item
-  entries.each do |entry|
+  entries.reverse.each do |entry|
     if items.find(:id => entry.id).first.to_a.size == 0
       new_items_count = new_items_count + 1
       if new_items_count >= ITEMS_TO_LOAD_AT_ONCE
