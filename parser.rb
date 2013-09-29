@@ -32,8 +32,10 @@ class ARDMediathekParser
   
   def parse_details(html, entry)
     doc = Nokogiri::HTML(html)
-    entry.title = doc.xpath('//h3/a').first.content
-    entry.description = doc.xpath('//p').first.content
+    headline = doc.xpath('//h3/a').first
+    description = doc.xpath('//p').first
+    entry.title = headline.content if headline
+    entry.description = description.content if description
     entry.discovered = DateTime.now
   end
 end

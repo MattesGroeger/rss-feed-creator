@@ -1,4 +1,5 @@
 require 'json'
+require 'mongo'
 require_relative 'parser'
 require_relative 'feed'
 

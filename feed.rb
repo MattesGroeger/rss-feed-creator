@@ -16,10 +16,10 @@ def generate_feed(entries)
 
     entries.each do |entry|
       xml = rss.items.new_item
-      xml.title       = entry.title
-      xml.link        = entry.url
-      xml.description = "#{entry.description} // #{entry.show}, #{entry.channel} (#{entry.duration} min) <#{entry.rating}/5>"
-      xml.date        = entry.discovered.to_s
+      xml.title       = entry['title']
+      xml.link        = entry['url']
+      xml.description = "#{entry['description']} // #{entry['show']}, #{entry['channel']} (#{entry['duration']} min) <#{entry['rating']}/5>"
+      xml.date        = entry['discovered']
     end
   end
 end

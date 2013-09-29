@@ -37,33 +37,33 @@ class Entry
   
   def to_obj
     {
-      "title" => @title,
-      "description" => @description,
-      "date" => @date.to_s,
-      "discovered" => @discovered.to_s,
-      "channel" => @channel,
-      "show" => @show,
-      "image_url" => @image_url,
-      "url" => @url,
-      "duration" => @duration,
-      "rating" => @rating,
-      "id" => @id
+      :title => @title,
+      :description => @description,
+      :date => @date.to_s,
+      :discovered => @discovered.to_s,
+      :channel => @channel,
+      :show => @show,
+      :image_url => @image_url,
+      :url => @url,
+      :duration => @duration,
+      :rating => @rating,
+      :id => @id
     }
   end
   
   def self.from_obj(obj)
     entry = self.new
-    entry.title = obj["title"]
-    entry.description = obj["description"]
-    entry.date = Date.parse(obj["date"])
-    entry.discovered = DateTime.parse(obj["discovered"]) if obj["discovered"] != ""
-    entry.channel = obj["channel"]
-    entry.show = obj["show"]
-    entry.image_url = obj["image_url"]
-    entry.url = obj["url"]
-    entry.duration = obj["duration"]
-    entry.rating = obj["rating"]
-    entry.id = obj["id"]
+    entry.title = obj[:title]
+    entry.description = obj[:description]
+    entry.date = Date.parse(obj[:date])
+    entry.discovered = DateTime.parse(obj[:discovered]) if obj[:discovered] != ""
+    entry.channel = obj[:channel]
+    entry.show = obj[:show]
+    entry.image_url = obj[:image_url]
+    entry.url = obj[:url]
+    entry.duration = obj[:duration]
+    entry.rating = obj[:rating]
+    entry.id = obj[:id]
     entry
   end
 
