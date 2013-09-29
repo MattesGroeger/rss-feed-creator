@@ -15,11 +15,13 @@ def generate_feed(entries)
     rss.items.max_size = 100
 
     entries.each do |entry|
+      puts entry['discovered']
+      puts Time.parse(entry['discovered']).localtime("+02:00")
       xml = rss.items.new_item
       xml.title       = entry['title']
       xml.link        = entry['url']
       xml.description = "#{entry['description']} // #{entry['show']}, #{entry['channel']} (#{entry['duration']} min) <#{entry['rating']}/5> (on air: #{entry['date']})"
-      xml.date        = entry['discovered']
+      xml.date        = Time.parse(entry['discovered']).localtime("+02:00")
     end
   end
 end
