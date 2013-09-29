@@ -15,8 +15,6 @@ def generate_feed(entries)
     rss.items.max_size = 100
 
     entries.each do |entry|
-      puts entry['discovered']
-      puts Time.parse(entry['discovered']).localtime("+02:00")
       xml = rss.items.new_item
       xml.title       = entry['title']
       xml.link        = entry['url']
