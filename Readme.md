@@ -3,7 +3,8 @@ Feed creator for ARD Mediathek (Reportage & Doku).
 ### Technology stack
 
 * Ruby app using Sinatra
-* MongoDB
+* Nokogiri to screen-scrape html
+* MongoDB for persistence
 * Deployment via Heroku
 
 ### Start the app locally
