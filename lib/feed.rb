@@ -15,10 +15,17 @@ def generate_feed(entries)
     rss.items.max_size = 100
 
     entries.each do |entry|
+      stars = ""
+      if (entry['rating'].to_i > 0)
+        (1..5).each do |index|
+          stars << (index <= entry['rating'].to_i ? "★" : "☆")
+        end
+      end
+      
       xml = rss.items.new_item
-      xml.title       = entry['title']
+      xml.title       = "#{entry['title']}, #{entry['duration']} min"
       xml.link        = entry['url']
-      xml.description = "#{entry['description']} // #{entry['show']}, #{entry['channel']} (#{entry['duration']} min) <#{entry['rating']}/5> (on air: #{entry['date']})"
+      xml.description = "#{entry['description']} #{stars}, #{entry['show']}, #{entry['channel']}, #{DateTime.parse(entry['date']).strftime("%d.%m.%Y")}"
       xml.date        = Time.parse(entry['discovered']).localtime("+02:00")
     end
   end
