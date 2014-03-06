@@ -1,3 +1,5 @@
+[![Code Climate](https://codeclimate.com/github/MattesGroeger/rss-feed-creator.png)](https://codeclimate.com/github/MattesGroeger/rss-feed-creator)
+
 Feed creator for ARD Mediathek (Reportage & Doku).
 
 ### Technology stack
