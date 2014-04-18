@@ -16,3 +16,32 @@ $ bundle install
 $ rake start
 $ shotgun lib/index.rb
 ```
+
+## Project Components
+
+#### Content Parser
+
+* HTTP Call (Method, Headers, Endpoint)
+* Details-Call per entry
+* Mapping of Content to Data model
+* Content Types: FeedEntry, ShopEntry
+
+#### Config
+
+* Category config
+  * Name, Link, Image
+  * Update interval
+* Parser config
+  * HTML Scraper
+  * JSON Parser
+
+#### Database
+
+* Categories
+* Entries
+  * id, addDate, seen, fav, custom fields
+
+#### Renderer
+
+* FeedRenderer
+* ImageRenderer

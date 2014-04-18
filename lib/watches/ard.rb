@@ -14,9 +14,9 @@ class ARDMediathekParser
       rating_span = div.css('p.mt-rating').first.content
       channel_span = div.css('span.mt-channel').first.content
       airtime_span = div.css('span.mt-airtime').first.content
-      
+
       date, duration = (matches = airtime_span.match(/(^.+) (\d+:\d+) min/i)) ? matches.captures : [airtime_span, "??:??"]
-      
+
       items << {
         :title => title_a.content,
         :show => source_span.sub(/aus: /, ''),
@@ -31,7 +31,7 @@ class ARDMediathekParser
     end
     items
   end
-  
+
   def parse_details(item)
     doc = Nokogiri::HTML(`curl 'http://www.ardmediathek.de/ard/servlet/ajax-cache/#{item[:id]}/view=ajax/isFromList=true/index.html'`)
     headline = doc.xpath('//h3/a').first
@@ -45,19 +45,19 @@ class ARDMediathekFeedFormatter
   def initialize(item)
     @item = item
   end
-  
+
   def title
     "#{@item['title']}, #{@item['duration']} min"
   end
-  
+
   def link
     @item['url']
   end
-  
+
   def date
     @item['date'].to_s
   end
-  
+
   def description
     stars = ""
     if (@item['rating'].to_i > 0)
