@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 require 'sinatra'
+require 'newrelic_rpm'
 require_relative 'storage'
 require_relative 'fetch'
 require_relative 'rss'
@@ -25,7 +26,7 @@ get '/rss.xml' do
   storage = Feed::Storage.new(watch[:storage])
 
   content_type 'text/xml; charset=utf-8'
-  
+
   Feed::fetch(watch, storage)
   Feed::rss(watch, storage)
 end
