@@ -3,29 +3,29 @@
 require 'date'
 
 class ARDMediathekFeedFormatter
-  def initialize(item)
-    @item = item
+  def initialize(entry)
+    @entry = entry
   end
 
   def title
-    "#{@item['title']}, #{@item['duration']} min"
+    "#{@entry.title}, #{@entry.data["duration"]} min"
   end
 
   def link
-    @item['url']
+    @entry.url
   end
 
   def date
-    @item['date'].to_s
+    @entry.data["date"].to_s
   end
 
   def description
     stars = ""
-    if (@item['rating'].to_i > 0)
+    if (@entry.data["rating"].to_i > 0)
       (1..5).each do |index|
-        stars << (index <= @item['rating'].to_i ? "★" : "☆")
+        stars << (index <= @entry.data["rating"].to_i ? "★" : "☆")
       end
     end
-    "#{@item['description']} #{stars}, #{@item['show']}, #{@item['channel']}, #{DateTime.parse(@item['date']).strftime("%d.%m.%Y")}"
+    "#{@entry.description} #{stars}, #{@entry.data["show"]}, #{@entry.data["channel"]}, #{DateTime.parse(@entry.data["date"]).strftime("%d.%m.%Y")}"
   end
 end

@@ -6,35 +6,39 @@ require_relative "util/string"
 
 module Feed
 
-  DETAIL_ITEMS_TO_LOAD_AT_ONCE = 5
+  DETAIL_ENTRIES_TO_LOAD_AT_ONCE = 5
 
-  def self.update(config, fetcher, storage)
-    require_relative "parser/#{config[:parser][:file]}"
+  def self.update(stream, fetcher)
+    require_relative "parser/#{stream.parser.file}"
 
-    parser_type = Object.const_get(config[:parser][:class])
+    parser_type = Object.const_get(stream.parser.clazz)
     parser = parser_type.new
-    items = parser.parse(fetcher.fetch(config[:url]))
+    entries = parser.parse(fetcher.fetch(stream.url))
 
-    puts "Retrieved #{items.size} items..."
+    puts "Retrieved #{entries.size} entries..."
 
-    new_items_count = 0
-    max_details = config[:max_details] || DETAIL_ITEMS_TO_LOAD_AT_ONCE
+    new_entries_count = 0
+    max_details = stream.max_details || DETAIL_ENTRIES_TO_LOAD_AT_ONCE
 
-    items.reverse.each do |item|
+    entries.reverse.each do |entry|
 
-      if storage.new_item?(item)
+      if Entry.where(uid: entry.uid).count == 0
         if parser_type.method_defined? :parse_details
-          new_items_count = new_items_count + 1
-          if new_items_count > max_details
+          new_entries_count = new_entries_count + 1
+          if new_entries_count > max_details
             break
           end
-          details_url = config[:details_url].replace_vars(item)
-          parser.parse_details(fetcher.fetch(details_url), item)
+          details_url = stream.details_url.replace_vars(entry)
+          parser.parse_details(fetcher.fetch(details_url), entry)
         end
 
-        storage.save_item(item)
         puts "\nNEW =============================================\n\n"
-        pp item
+        pp entry
+
+        entry.stream_id = stream._id
+        entry.save
+      else
+        entry.destroy
       end
     end
   end

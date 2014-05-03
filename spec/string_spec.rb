@@ -1,4 +1,4 @@
-require_relative '../lib/util/string.rb'
+require 'spec_helper'
 
 describe String do
 

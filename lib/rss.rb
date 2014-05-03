@@ -5,10 +5,10 @@ require 'rss'
 
 module Feed
 
-  def self.rss(watch, storage)
+  def self.rss(watch)
     require_relative "formatter/#{watch[:formatter][:file]}"
 
-    items = storage.items(25)
+    entries = Entry.sort(:updated_at.desc).limit(25)
 
     rss = RSS::Maker.make("2.0") do |rss|
       rss.channel.about = watch[:info][:link]
@@ -20,8 +20,8 @@ module Feed
       rss.items.do_sort = true
       rss.items.max_size = 100
 
-      items.each do |item|
-        formatter = Object.const_get(watch[:formatter][:class]).new(item)
+      entries.each do |entry|
+        formatter = Object.const_get(watch[:formatter][:class]).new(entry)
 
         xml = rss.items.new_item
         xml.title = formatter.title
