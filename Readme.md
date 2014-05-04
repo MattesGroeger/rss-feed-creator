@@ -34,6 +34,10 @@ $ shotgun lib/index.rb
 * Parser config
   * HTML Scraper
   * JSON Parser
+* Output config
+  * type (rss|json)
+  * type-config (e.g. entry_count & mapper for rss)
+  * streams[]
 
 #### Database
 

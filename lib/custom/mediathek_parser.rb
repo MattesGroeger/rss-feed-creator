@@ -1,7 +1,7 @@
 require 'date'
 require 'nokogiri'
 
-class ARDMediathekParser
+class MediathekParser
   def parse(content)
     entries = []
     doc = Nokogiri::HTML(content)

@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe ARDMediathekParser do
+describe MediathekParser do
 
   before :all do
-    @parser = ARDMediathekParser.new
+    @parser = MediathekParser.new
   end
 
   it "should parse items" do

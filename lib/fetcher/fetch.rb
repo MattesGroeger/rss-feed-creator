@@ -1,15 +1,15 @@
 # encoding: utf-8
 
 require "pp"
-require_relative "fetcher/http"
-require_relative "util/string"
+require_relative "http"
+require_relative "../util/string"
 
-module Feed
+module Fetcher
 
   DETAIL_ENTRIES_TO_LOAD_AT_ONCE = 5
 
-  def self.update(stream, fetcher)
-    require_relative "parser/#{stream.parser.file}"
+  def self.fetch(stream, fetcher)
+    require_relative "../custom/#{stream.parser.file}"
 
     parser_type = Object.const_get(stream.parser.clazz)
     parser = parser_type.new

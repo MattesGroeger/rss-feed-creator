@@ -6,26 +6,11 @@ require 'mongo_mapper'
 require_relative 'model/entry'
 require_relative 'model/parser'
 require_relative 'model/stream'
+require_relative 'model/output'
 require_relative 'model/website'
+require_relative 'fetcher/fetch'
 require_relative 'fetcher/http'
-require_relative 'update'
-require_relative 'rss'
-
-WATCHES = {
-  ard: {
-    info: {
-      title: 'ARD Mediathek Reportage & Doku',
-      description: 'ARD Mediathek Reportage & Doku',
-      link: 'http://www.ardmediathek.de/fernsehen',
-      language: 'de'
-    },
-    # url: 'http://www.ardmediathek.de/ard/servlet/ajax-cache/3474718/view=switch/index.html',
-    # details_url: "http://www.ardmediathek.de/ard/servlet/ajax-cache/{{uid}}/view=ajax/isFromList=true/index.html",
-    # max_details: 5,
-    # parser: {file: 'mediathek', class: 'ARDMediathekParser'},
-    formatter: {file: 'mediathek_rss', class: 'ARDMediathekFeedFormatter'}
-  }
-}
+require_relative 'renderer/rss'
 
 configure do
   mongo_db = ENV['DATABASE_URI'] || 'mongodb://localhost'
@@ -33,21 +18,16 @@ configure do
   MongoMapper.database = "rssfeed"
 end
 
+get '/output/:output_id' do |id|
+  update()
+  output(id)
+end
+
+# @deprecated
 get '/rss.xml' do
-  content_type 'text/xml; charset=utf-8'
-
-  # Run migrations
-  migrate()
-
-  # Retrieve new contents
-  Website.all.each { |website|
-    website.streams.each { |stream|
-      Feed::update(stream, Http.new)
-    }
-  }
-
-  # Render rss feed - todo get rid of it here
-  Feed::rss(WATCHES[:ard])
+  migrate() # Run migrations
+  update()  # Retrieve new contents
+  output(Output.first._id.to_s) # Legacy
 end
 
 def migrate
@@ -59,8 +39,9 @@ def migrate
                   title: "ARD Mediathek",
                   url: "http://www.ardmediathek.de")
 
-  p = Parser.create(file: "mediathek",
-                    clazz: "ARDMediathekParser")
+  Parser.destroy_all
+  p = Parser.create(file: "mediathek_parser",
+                    clazz: "MediathekParser")
 
   w.streams << Stream.new(key: "doku-reportage",
                           title: "Doku & Reportage",
@@ -91,4 +72,41 @@ def migrate
   }
 
   w.save
+
+  Output.destroy_all
+  Output.create(
+    title: 'Mediathek Doku Feed',
+    description: 'Neuste ARD Mediathek Reportage & Doku Beiträge',
+    type: 'rss',
+    config: {
+      file: 'mediathek_formatter_rss',
+      class: 'MediathekFormatterRss',
+      item_count: 25
+    },
+    stream_ids: [w.streams.first._id]
+  )
+end
+
+def update
+  Website.all.each { |website|
+    website.streams.each { |stream|
+      Fetcher::fetch(stream, Http.new)
+    }
+  }
+end
+
+def output(id)
+  output = Output.find(BSON::ObjectId.from_string(id))
+  if output.nil?
+    halt 404, "Output for id '#{id}' not Found"
+  end
+  if output.type == 'rss'
+    content_type 'text/xml; charset=utf-8'
+    Renderer::rss(output)
+  elsif output.type == 'json'
+    content_type 'application/json; charset=utf-8'
+    {}.to_json # todo
+  else
+    halt 500, "Unsupported output type '#{output.type}'"
+  end
 end

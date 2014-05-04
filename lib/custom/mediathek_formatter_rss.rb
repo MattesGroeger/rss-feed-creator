@@ -2,7 +2,7 @@
 
 require 'date'
 
-class ARDMediathekFeedFormatter
+class MediathekFormatterRss
   def initialize(entry)
     @entry = entry
   end

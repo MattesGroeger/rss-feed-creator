@@ -11,7 +11,7 @@ shared_examples "ard mediathek" do |url, details_url|
 
     fetcher = Http.new
 
-    Feed::update(stream, fetcher)
+    Fetcher::fetch(stream, fetcher)
 
     expect(Entry.all.count).to eq(1)
   end
@@ -20,15 +20,16 @@ end
 describe "fetching from ard mediathek" do
 
   before(:all) do
+    Website.destroy_all
+    Parser.destroy_all
     w = Website.new(key: "ard-mediathek",
                     title: "ARD Mediathek")
-    p = Parser.create(file: "mediathek",
-                      clazz: "ARDMediathekParser")
+    p = Parser.create(file: "mediathek_parser",
+                      clazz: "MediathekParser")
     w.streams << Stream.new(key: "doku-reportage",
                             url: "http://www.ardmediathek.de/ard/servlet/ajax-cache/3474718/view=switch/index.html",
                             max_details: 1,
                             parser_id: p._id)
-    pp w
     w.save
   end
 
@@ -64,7 +65,7 @@ describe "Parsing cached files" do
       File.read("spec/data/#{file}.html")
     }
 
-    Feed::update(stream, fetcher)
+    Fetcher::fetch(stream, fetcher)
 
     expect(Entry.all.count).to eq(5)
   end
