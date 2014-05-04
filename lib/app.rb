@@ -11,6 +11,7 @@ require_relative 'model/website'
 require_relative 'fetcher/fetch'
 require_relative 'fetcher/http'
 require_relative 'renderer/rss'
+require_relative 'renderer/json'
 
 configure do
   mongo_db = ENV['DATABASE_URI'] || 'mongodb://localhost'
@@ -105,7 +106,7 @@ def output(id)
     Renderer::rss(output)
   elsif output.type == 'json'
     content_type 'application/json; charset=utf-8'
-    {}.to_json # todo
+    Renderer::json(output)
   else
     halt 500, "Unsupported output type '#{output.type}'"
   end
