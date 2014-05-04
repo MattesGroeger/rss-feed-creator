@@ -20,7 +20,7 @@ WATCHES = {
       language: 'de'
     },
     # url: 'http://www.ardmediathek.de/ard/servlet/ajax-cache/3474718/view=switch/index.html',
-    # details_url: "http://www.ardmediathek.de/ard/servlet/ajax-cache/{{id}}/view=ajax/isFromList=true/index.html",
+    # details_url: "http://www.ardmediathek.de/ard/servlet/ajax-cache/{{uid}}/view=ajax/isFromList=true/index.html",
     # max_details: 5,
     # parser: {file: 'mediathek', class: 'ARDMediathekParser'},
     formatter: {file: 'mediathek_rss', class: 'ARDMediathekFeedFormatter'}
@@ -68,6 +68,27 @@ def migrate
                           details_url: "http://www.ardmediathek.de/ard/servlet/ajax-cache/{{uid}}/view=ajax/isFromList=true/index.html",
                           max_details: 5,
                           parser_id: p._id)
+
+  MongoMapper.database
+    .collection("items")
+    .find.sort([["discovered", 1]])
+    .to_a.each { |item|
+      Entry.create(
+        uid: item["id"],
+        title: item["title"],
+        description: item["description"],
+        url: item["url"],
+        image_url: item["image_url"],
+        stream_id: w.streams.first._id,
+        data: {
+          show: item["show"],
+          channel: item["channel"],
+          duration: item["duration"],
+          date: item["date"],
+          rating: item["rating"]
+        }
+      )
+  }
 
   w.save
 end
