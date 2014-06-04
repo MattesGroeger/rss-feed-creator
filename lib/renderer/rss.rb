@@ -7,15 +7,20 @@ module Renderer
   def self.rss(output)
     require_relative "../custom/#{output.config['file']}"
 
-    stream_id = output.stream_ids.first
-    website = Website.where('streams._id' => output.stream_ids.first).first
-    entries = Entry.where(stream_id: stream_id).sort(:updated_at.desc).limit(output.config['item_count'])
+    user = User.first;
+    parser = Parser.where(user: user.id).first
+
+    # stream_id = output.stream_ids.first
+    # website = Website.where('streams._id' => output.stream_ids.first).first
+    entries = Entry.where(parser: parser.id, user: user.id)
+      .sort(:createdAt.desc)
+      .limit(output.config['item_count'])
 
     result = RSS::Maker.make("2.0") do |rss|
-      rss.channel.about = website.url
-      rss.channel.title = website.title
+      rss.channel.about = parser.url
+      rss.channel.title = parser.title
       rss.channel.description = output.description
-      rss.channel.link = website.url
+      rss.channel.link = parser.url
 
       rss.items.do_sort = true
       rss.items.max_size = 100

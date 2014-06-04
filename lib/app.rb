@@ -8,6 +8,7 @@ require_relative 'model/parser'
 require_relative 'model/stream'
 require_relative 'model/output'
 require_relative 'model/website'
+require_relative 'model/user'
 require_relative 'renderer/rss'
 require_relative 'renderer/json'
 

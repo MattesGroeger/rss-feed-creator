@@ -8,24 +8,18 @@ class MediathekFormatterRss
   end
 
   def title
-    "#{@entry.title}, #{@entry.data["duration"]} min"
+    "#{@entry.data["title"]}, #{@entry.data["duration"]}"
   end
 
   def link
-    @entry.url
+    @entry.data["url"]
   end
 
   def date
-    @entry.data["date"].to_s
+    @entry.createdAt.to_s
   end
 
   def description
-    stars = ""
-    if (@entry.data["rating"].to_i > 0)
-      (1..5).each do |index|
-        stars << (index <= @entry.data["rating"].to_i ? "★" : "☆")
-      end
-    end
-    "#{@entry.description} #{stars}, #{@entry.data["show"]}, #{@entry.data["channel"]}, #{DateTime.parse(@entry.data["date"]).strftime("%d.%m.%Y")}"
+    "#{@entry.data["show"]}, #{@entry.data["channel"]}, #{@entry.data["date"]}"
   end
 end

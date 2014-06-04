@@ -1,8 +1,9 @@
 class Parser
   include MongoMapper::Document
 
-  timestamps!
-
-  key :file,  String, required: true
-  key :clazz, String, required: true
+  key :user, Object
+  key :url, String
+  key :title, String
+  key :loopElement, String
+  key :index, String
 end
